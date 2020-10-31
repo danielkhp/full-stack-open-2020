@@ -1,0 +1,12 @@
+note over browser:
+user clicks submit
+end note
+
+note over browser:
+browser executes js-code that:
+creates new note
+re-renders the list
+sends new note to server
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
