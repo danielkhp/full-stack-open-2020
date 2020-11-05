@@ -27,6 +27,9 @@ const App = () => {
       <Stat text='good' value={good} />
       <Stat text='neutral' value={neutral} />
       <Stat text='bad' value={bad} />
+      <Stat text='all' value={good + bad + neutral} />
+      <Stat text='average' value={(good + bad + neutral) / 3} />
+      <Stat text='positive' value={good / (good + bad + neutral) * 100 + '%'} />
     </div>
   )
 }
