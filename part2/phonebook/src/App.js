@@ -32,12 +32,22 @@ const App = () => {
       setNewName('')
       setNewNumber('')
     } else {
-      window.alert(`${newName} is already in the phonebook`)
+      if (window.confirm(`${newName} is already in the phonebook, replace the old number with a new one?`)) {
+        const newPerson = {
+          name: newName,
+          number: newNumber
+        }
+        axios
+          .put(`${url}${found.id}/`, newPerson)
+          .then(response => {
+            setPersons(persons.map(person => person.id !== found.id ? person : response.data))
+          })
+      }
     }
   }
 
   const deletePerson = id => {
-    if (window.confirm('Are you sure you want to delete this number?')) {
+    if (window.confirm(`Are you sure you want to delete this number?`)) {
       axios
         .delete(`${url}${id}/`)
         .then(response => {
