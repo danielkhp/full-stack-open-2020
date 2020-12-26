@@ -4,6 +4,8 @@ import Persons from './components/Persons'
 import SearchFilter from './components/SearchFilter'
 import axios from 'axios'
 
+const url = 'http://localhost:3001/persons'
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
@@ -12,17 +14,21 @@ const App = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3001/persons')
-      .then(response => (
-        setPersons(response.data)
-      ))
+      .get(url)
+      .then(response => setPersons(response.data))
   }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
     const found = persons.find(person => person.name === newName)
-    if (found === undefined){
-      setPersons(persons.concat({ name: newName, number: newNumber }))
+    if (found === undefined) {
+      const newPerson = {
+        name: newName,
+        number: newNumber
+      }
+      axios
+        .post(url, newPerson)
+        .then(response => setPersons(persons.concat({...response.data})))
       setNewName('')
       setNewNumber('')
     } else {
