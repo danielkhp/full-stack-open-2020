@@ -4,7 +4,7 @@ import Persons from './components/Persons'
 import SearchFilter from './components/SearchFilter'
 import axios from 'axios'
 
-const url = 'http://localhost:3001/persons'
+const url = 'http://localhost:3001/persons/'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -18,7 +18,7 @@ const App = () => {
       .then(response => setPersons(response.data))
   }, [])
 
-  const addPerson = (event) => {
+  const addPerson = event => {
     event.preventDefault()
     const found = persons.find(person => person.name === newName)
     if (found === undefined) {
@@ -28,11 +28,23 @@ const App = () => {
       }
       axios
         .post(url, newPerson)
-        .then(response => setPersons(persons.concat({...response.data})))
+        .then(response => setPersons(persons.concat({ ...response.data })))
       setNewName('')
       setNewNumber('')
     } else {
       window.alert(`${newName} is already in the phonebook`)
+    }
+  }
+
+  const deletePerson = id => {
+    if (window.confirm('Are you sure you want to delete this number?')) {
+      axios
+        .delete(`${url}${id}/`)
+        .then(response => {
+          if (response.status === 200) {
+            setPersons(persons.filter(person => person.id !== id))
+          }
+        })
     }
   }
 
@@ -55,12 +67,12 @@ const App = () => {
       <h3>add a new</h3>
 
       <Form name={newName} number={newNumber} onSubmit={addPerson}
-            onNameChange={updateNameValue} onNumberChange={updateNumberValue}
+        onNameChange={updateNameValue} onNumberChange={updateNumberValue}
       />
 
       <h3>Numbers</h3>
 
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} deletePerson={deletePerson}/>
 
     </div>
   )

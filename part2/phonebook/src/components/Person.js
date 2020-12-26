@@ -1,9 +1,12 @@
 import React from 'react'
 
-const Person = ({ person }) => (
-  <li>
-    {person.name} {person.number}
-  </li>
-)
+const Person = ({ person, deletePerson }) => {
+  return (
+    <li>
+      {person.name} {person.number}
+      <button type='button' onClick={() => deletePerson(person.id)}>delete</button>
+    </li>
+  )
+}
 
 export default Person
