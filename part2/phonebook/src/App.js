@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Form from './components/Form'
+import Notification from './components/Notification'
 import Persons from './components/Persons'
 import SearchFilter from './components/SearchFilter'
 import axios from 'axios'
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notification, setNotification] = useState()
 
   useEffect(() => {
     axios
@@ -28,7 +30,11 @@ const App = () => {
       }
       axios
         .post(url, newPerson)
-        .then(response => setPersons(persons.concat({ ...response.data })))
+        .then(response => {
+          setPersons(persons.concat({ ...response.data }))
+          setNotification(`Added ${response.data.name}`)
+          setTimeout(() => setNotification(null), 3000)
+        })
       setNewName('')
       setNewNumber('')
     } else {
@@ -41,6 +47,13 @@ const App = () => {
           .put(`${url}${found.id}/`, newPerson)
           .then(response => {
             setPersons(persons.map(person => person.id !== found.id ? person : response.data))
+            setNotification(`Updated ${response.data.name}`)
+            setTimeout(() => setNotification(null), 3000)
+          })
+          .catch(() => {
+            setNotification(
+              `${found.name} was already removed from the server`
+            )
           })
       }
     }
@@ -76,13 +89,15 @@ const App = () => {
 
       <h3>add a new</h3>
 
+      <Notification message={notification} />
+
       <Form name={newName} number={newNumber} onSubmit={addPerson}
         onNameChange={updateNameValue} onNumberChange={updateNumberValue}
       />
 
       <h3>Numbers</h3>
 
-      <Persons persons={persons} filter={filter} deletePerson={deletePerson}/>
+      <Persons persons={persons} filter={filter} deletePerson={deletePerson} />
 
     </div>
   )
